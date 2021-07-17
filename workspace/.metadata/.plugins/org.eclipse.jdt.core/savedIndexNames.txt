@@ -1,0 +1,10 @@
+INDEX VERSION 1.131+E:\ieexp3\new\japanese-lang-robot-programming\workspace\.metadata\.plugins\org.eclipse.jdt.core
+3140792410.index
+82386065.index
+3351154057.index
+200773470.index
+1434119999.index
+1339966640.index
+3000861989.index
+3314573251.index
+3663820559.index

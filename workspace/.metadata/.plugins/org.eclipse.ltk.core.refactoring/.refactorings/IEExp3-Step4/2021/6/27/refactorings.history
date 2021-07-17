@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="2 個の要素を &apos;Japanese-Language-Robot-Programming-Server/src/com.example&apos; にコピー&#x0D;&#x0A;- 元のプロジェクト: &apos;IEExp3-Step4&apos;&#x0D;&#x0A;- 宛先要素: &apos;Japanese-Language-Robot-Programming-Server/src/com.example&apos;&#x0D;&#x0A;- オリジナル要素:&#x0D;&#x0A;     ieexp3.id190441091.BasicTask4Server.java&#x0D;&#x0A;     ieexp3.id190441091.BasicTask4ServerTask.java" description="コンパイル単位をコピー" destination="=Japanese-Language-Robot-Programming-Server/src&lt;com.example" element1="/src&lt;ieexp3.id190441091{BasicTask4Server.java" element2="/src&lt;ieexp3.id190441091{BasicTask4ServerTask.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1625033088704" units="2" version="1.0"/>
+</session>

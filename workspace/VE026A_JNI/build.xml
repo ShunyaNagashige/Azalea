@@ -1,0 +1,43 @@
+<project basedir=".">
+	<!-- プロジェクト名 -->
+	<property name="name" value="VE026A_JNI" />
+	<!-- パッケージディレクトリ -->
+	<property name="package.dir" value="ieexp3/library" />
+	<!-- ソースファイルのディレクトリ -->
+	<property name="src.dir" value="src" />
+	<!-- クラスファイルを出力するディレクトリ -->
+	<property name="classes.dir" value="bin" />
+	<!-- ヘッダファイルを出力するディレクトリ -->
+	<property name="header.dir" value="hdr" />
+	<!-- DLLファイルを配置するディレクトリ -->
+	<property name="dll.dir" value="dll" />
+	<!-- javaファイル名 -->
+	<property name="java.name" value="${name}.java" />
+	<!-- jarファイル名 -->
+	<property name="jar.name" value="${name}.jar" />
+	<!-- jarファイルを出力するディレクトリ -->
+	<property name="jar.dir" value="lib" />
+	
+	<!-- ヘッダファイル作成 -->
+	<target name="create c header file">
+		<exec executable="javac">
+			<arg value="-encoding" />
+			<arg value="utf-8" />
+			<arg value="${src.dir}/${package.dir}/${java.name}" />
+			<arg value="-classpath" />
+			<arg value="${classes.dir}" />
+			<arg value="-h" />
+			<arg value="${header.dir}" />
+		</exec>
+	</target>
+	
+	<!-- jarファイル作成 -->
+	<target name="create jar file">
+		<jar destfile="${jar.dir}/${jar.name}" update="true" >
+			<fileset dir="${classes.dir}" />
+			<fileset dir="${src.dir}" />
+			<fileset dir="${dll.dir}" />
+		</jar>
+	</target>
+	
+</project>

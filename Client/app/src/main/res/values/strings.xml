@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">jsrp-client</string>
+    <string-array name="list">
+        <item>Japanese</item>
+        <item>Simplified Chinese</item>
+        <item>English</item>
+    </string-array>
+    <string name="robot_description1">robot</string>
+</resources>

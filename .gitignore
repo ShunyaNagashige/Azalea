@@ -1,0 +1,15 @@
+/Client/*.iml
+/Client/.gradle
+/Client/local.properties
+/Client/.idea/caches
+/Client/.idea/libraries
+/Client/.idea/modules.xml
+/Client/.idea/workspace.xml
+/Client/.idea/navEditor.xml
+/Client/.idea/assetWizardSettings.xml
+/Client/.DS_Store
+/Client/build
+/Client/captures
+/Client/.externalNativeBuild
+/Client/.cxx
+/Client/local.properties

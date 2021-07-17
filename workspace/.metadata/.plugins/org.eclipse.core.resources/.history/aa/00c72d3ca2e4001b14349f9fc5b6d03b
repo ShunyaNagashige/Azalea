@@ -1,0 +1,215 @@
+/*
+ * サーバ側のバックグラウンドスレッドが実行するTaskクラス
+ */
+package com.example;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
+
+import com.google.gson.Gson;
+
+import ieexp3.library.CaoAPI;
+
+public class ServerTask implements Runnable {
+	// 可変長の配列が欲しいのでArrayListを使用
+	private static ArrayList<Thread> threadList;
+	private static String preOperation;
+	private final static int holeNum = 3;
+	private Socket socket;
+	private String[] holes;
+	volatile private boolean isLoop;
+
+	public ServerTask(Socket socket) {
+		this.socket = socket;
+
+		if (threadList == null) {
+			threadList = new ArrayList<Thread>();
+		}
+
+		// Thread.currentThread():現在実行中のスレッドオブジェクトの参照を返す
+		threadList.add(Thread.currentThread());
+	}
+
+	@Override
+	public void run() {
+		DataInputStream socketDIS = null;
+		DataOutputStream socketDOS = null;
+
+		try {
+			// ソケットの入出力ストリームを取得し，データ入力ストリームを連結
+			socketDIS = new DataInputStream(socket.getInputStream());
+			socketDOS = new DataOutputStream(socket.getOutputStream());
+			
+			isLoop=true;
+
+			while (isLoop) {
+				// クライアントからのメッセージを受け取る
+				String json = socketDIS.readUTF();
+
+				if (json == null) {
+					throw new NullPointerException("jsonがnullです。");
+				}
+
+				// jsonをModelオブジェクトに直す
+				Gson gson = new Gson();
+				Model model = gson.fromJson(json, Model.class);
+
+				// トークンの生成
+				Analysis a = new Analysis(model.lang, model.message);
+				ArrayList<String> tokens = a.analyze();
+				
+				// トークンの中からコマンドの構成要素を抽出する
+				Token t=new Token(model.lang,tokens);
+				ArrayList<ArrayList<String>> cmdElementList=t.toElementList();
+				
+				for (String cmd : cmdList) {
+					// connectコマンドならロボットへの接続を行う
+					if (cmd.startsWith("connect")) {
+						connect();
+						socketDOS.writeUTF("connect succeeded.");
+						System.out.println("Connected completely.");
+					} else if (cmd.startsWith("disconnect")) {
+						disconnect();
+						isLoop=false;
+						socketDOS.writeUTF("disconnect succeeded.");
+						socket.close();
+						threadList.remove(Thread.currentThread());
+						
+					} else if (cmd.startsWith("run")) {
+						StringTokenizer st = new StringTokenizer(cmd, " ");
+						st.nextToken();
+
+						holes = new String[holeNum];
+
+						for (int i = 0; i < holeNum; i++) {
+							holes[i] = st.nextToken();
+						}
+
+						process();
+
+						socketDOS.writeUTF("run succeeded.");
+					}
+				}
+			}
+		} catch (Exception e) {
+			try {
+				socketDOS.writeUTF(e.getMessage());
+				socketDOS.flush();
+				e.printStackTrace();
+			} catch (Exception ee) {
+				ee.printStackTrace();
+			}
+		} finally {
+			if (socket != null)
+				try {
+					socket.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			if (socketDIS != null)
+				try {
+					socketDIS.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			if (socketDOS != null)
+				try {
+					socketDOS.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		}
+	}
+
+	private void connect() throws Exception {
+		// CAOエンジンの初期化
+		CaoAPI.init("TestWorkspace");
+		System.out.println("CAO engine is initialized.");
+
+		// コントローラに接続
+		CaoAPI.connect("RC8", "VE026A");
+		System.out.println("Controller and Robot are connected.");
+
+		// 自動モードに設定
+		CaoAPI.setControllerMode(CaoAPI.CONTROLLER_MODE_AUTO);
+		System.out.println("Operation mode is set to Auto mode.");
+
+		// モータを起動
+		CaoAPI.turnOnMotor();
+		System.out.println("Motor is turned on.");
+
+		// ロボットの外部速度/加速度/減速度を設定
+		float speed = 50.0f, accel = 25.0f, decel = 25.0f;
+		CaoAPI.setExtSpeed(speed, accel, decel);
+		System.out.println(
+				"External speed/acceleration/deceleration is set to " + speed + "/" + accel + "/" + decel + ".");
+	}
+
+	/**
+	 * ロボットを制御するコマンドを記述する。
+	 * 
+	 * @throws Exception ロボットの制御に失敗した場合
+	 */
+	private void process() throws Exception {
+		// ロボット操作
+
+		// TakeArm Keep = 0
+		CaoAPI.takeArm(0L, 0L);
+
+		// Speed 100
+		CaoAPI.speed(-1L, 100.0f);
+
+		// Approach P, P5, @0 50
+		// Move L, @0 P5, S = 50
+		// DriveA (7, F1)
+		// Depart L, @P 50
+		CaoAPI.approach(1L, "P" + holes[0], "@0 50", "");
+		CaoAPI.move(2L, "@0 P" + holes[0], "S = 50");
+		CaoAPI.driveAEx("(7, -45)", "");
+		CaoAPI.depart(2L, "@P 50", "");
+
+		// Approach P, P5, @0 50
+		// Move L, @0 P5, S = 50
+		// DriveA (7, F1)
+		// Depart L, @P 50
+		CaoAPI.approach(1L, "P" + holes[1], "@0 50", "");
+		CaoAPI.move(2L, "@0 P" + holes[1], "S = 50");
+		CaoAPI.driveAEx("(7, 25)", "");
+		CaoAPI.depart(2L, "@P 50", "");
+
+		// Approach P, P5, @0 50
+		// Move L, @0 P5, S = 50
+		// DriveA (7, F1)
+		// Depart L, @P 50
+		CaoAPI.approach(1L, "P" + holes[1], "@0 50", "");
+		CaoAPI.move(2L, "@0 P" + holes[1], "S = 50");
+		CaoAPI.driveAEx("(7, -45)", "");
+		CaoAPI.depart(2L, "@P 50", "");
+
+		// Approach P, P5, @0 50
+		// Move L, @0 P5, S = 50
+		// DriveA (7, F1)
+		// Depart L, @P 50
+		CaoAPI.approach(1L, "P" + holes[2], "@0 50", "");
+		CaoAPI.move(2L, "@0 P" + holes[2], "S = 50");
+		CaoAPI.driveAEx("(7, 25)", "");
+		CaoAPI.depart(2L, "@P 50", "");
+
+		CaoAPI.giveArm();
+	}
+
+	private void disconnect() throws Exception {
+		// モータを停止
+		CaoAPI.turnOffMotor();
+		System.out.println("Moter is turned off.");
+
+		// コントローラから切断
+		CaoAPI.disconnect();
+		System.out.println("Controller and Robot is disconnected.");
+	}
+
+}

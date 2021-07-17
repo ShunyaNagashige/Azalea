@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="3 個の要素を &apos;jsrp-server/src/main/java/com.example&apos; にコピー&#x0D;&#x0A;- 元のプロジェクト: &apos;Japanese-Language-Robot-Programming-Server&apos;&#x0D;&#x0A;- 宛先要素: &apos;jsrp-server/src/main/java/com.example&apos;&#x0D;&#x0A;- オリジナル要素:&#x0D;&#x0A;     com.example.ServerTask.java&#x0D;&#x0A;     com.example.MessageParser.java&#x0D;&#x0A;     com.example.Server.java" description="コンパイル単位をコピー" destination="=jsrp-server/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;com.example" element1="/src&lt;com.example{ServerTask.java" element2="/src&lt;com.example{MessageParser.java" element3="/src&lt;com.example{Server.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1625632204745" units="3" version="1.0"/>
+</session>

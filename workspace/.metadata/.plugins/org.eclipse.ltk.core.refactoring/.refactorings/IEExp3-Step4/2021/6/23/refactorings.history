@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring accessors="true" comment="Delete element from プロジェクト &apos;IEExp3-Step4&apos;&#x0D;&#x0A;- 元のプロジェクト: &apos;IEExp3-Step4&apos;&#x0D;&#x0A;- オリジナル要素: &apos;ieexp3.id190441091.CommunicationService4.java&apos;" description="要素を削除" element1="/src&lt;ieexp3.id190441091{CommunicationService4.java" elements="1" flags="589830" id="org.eclipse.jdt.ui.delete" resources="0" stamp="1622613982906" subPackages="false" version="1.0"/>
+</session>

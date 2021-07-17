@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <EditText
+        android:id="@+id/editInputBox"
+        android:layout_width="361dp"
+        android:layout_height="64dp"
+        android:background="@drawable/frame_style"
+        android:ems="10"
+        android:gravity="center_horizontal"
+        android:inputType="textMultiLine"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="260dp"
+        android:layout_height="191dp"
+        android:layout_margin="10dp"
+        android:contentDescription="@string/robot_description1"
+        android:src="@drawable/robot_free"
+        app:layout_constraintBottom_toTopOf="@id/spinner"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="107dp"
+        android:layout_height="30dp"
+        android:layout_margin="10dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/frame_style"
+        android:entries="@array/list"
+        app:layout_constraintBottom_toTopOf="@id/editInputBox"
+        app:layout_constraintStart_toStartOf="@id/editInputBox" />
+
+    <TextView
+        android:id="@+id/textAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="IPAddress"
+        app:layout_constraintStart_toStartOf="@+id/editAddress"
+        app:layout_constraintTop_toBottomOf="@+id/editInputBox" />
+
+    <EditText
+        android:id="@+id/editAddress"
+        android:layout_width="157dp"
+        android:layout_height="28dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toStartOf="@id/editPort"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textAddress" />
+
+    <TextView
+        android:id="@+id/textPort"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PortNumber"
+        android:layout_margin="5dp"
+        app:layout_constraintStart_toStartOf="@+id/editPort"
+        app:layout_constraintTop_toBottomOf="@+id/editInputBox" />
+
+    <EditText
+        android:id="@+id/editPort"
+        android:layout_width="169dp"
+        android:layout_height="30dp"
+        android:ems="10"
+        android:inputType="number"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/editAddress"
+        app:layout_constraintTop_toBottomOf="@id/textPort" />
+
+    <Button
+        android:id="@+id/buttonExecute"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:onClick="handleExecute"
+        android:text="実行"
+        app:layout_constraintEnd_toStartOf="@id/buttonClear"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editAddress" />
+
+    <Button
+        android:id="@+id/buttonClear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:onClick="handleButtonClear"
+        android:text="クリア"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/buttonExecute"
+        app:layout_constraintTop_toBottomOf="@id/editAddress" />
+
+    <TextView
+        android:id="@+id/viewLog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="20dp"
+        android:text="Log:"
+        app:layout_constraintStart_toStartOf="@id/editInputBox"
+        app:layout_constraintTop_toBottomOf="@id/buttonExecute" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

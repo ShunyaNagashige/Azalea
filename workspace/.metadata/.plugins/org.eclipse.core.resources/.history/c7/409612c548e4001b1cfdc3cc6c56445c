@@ -1,0 +1,71 @@
+package com.example;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.fnlp.nlp.cn.CNFactory;
+import org.fnlp.util.exception.LoadModelException;
+
+import com.google.gson.Gson;
+
+public class example {
+	public static void main(String[] args) {
+//        Tokenizer tokenizer = new Tokenizer() ;
+//        List<Token> tokens = tokenizer.tokenize("１番のホールにあるボールを、２番、３番のホールへ順に移動させる。");
+//        for (Token token : tokens) {
+//            System.out.println(token.getSurface() + "\t" + token.getAllFeatures());
+//        }
+		try {
+//			MorphologicalAnalysis ma = new MorphologicalAnalysis("ja", "4番のホールにあるボールを、3番、2番のホールへ順に移動させる。");
+//			MorphologicalAnalysis ma = new MorphologicalAnalysis("zh-CN", "第四洞的球依次移到第二洞和第三洞。");
+//			String cmd = ma.createCmd();
+//			System.out.println(cmd);
+			
+			Model model=new Model();
+			model.lang="ja";
+			model.message="4番のホールにあるボールを、3番、2番のホールへ順に移動させる。";
+			
+			Gson gson=new Gson();
+			String json=gson.toJson(model);
+			
+			System.out.println(json);
+			
+//			String clientMessage=
+//					"{\r\n"
+//					+ "  \"lang\":\"ja\",\r\n"
+//					+ "  \"message\":\"4番のホールにあるボールを、3番、2番のホールへ順に移動させる。\"\r\n"
+//					+ "}";
+	        model = gson.fromJson(json, Model.class);
+
+	        System.out.println("lang:" + model.lang);
+	        System.out.println("message:" + model.message);
+//			String[] tmp = clientMessage.split(" ");
+//			if(tmp.length<2) {
+//				System.out.println("不適切な長さ");
+//			}
+//			System.out.println(tmp[0]);
+//			CNFactory factory = null;
+//			// モデルファイルのパスを指定し、形態素解析器を呼び出す
+//			try {
+//			    factory = CNFactory.getInstance("./dic");
+//			} catch (LoadModelException lme) {
+//			    lme.printStackTrace();
+//			}
+//			String message = "今天天气真好啊！";
+////			>> [今天, 天气, 真, 好, 啊, ！]
+//			try {
+//			    factory = CNFactory.getInstance("./dic");
+//			} catch (LoadModelException lme) {
+//			    lme.printStackTrace();
+//			}
+//			String[][] ctokens = factory.tag(message);
+//			List<String> list =Arrays.asList(ctokens[0]);
+//			ArrayList<String> newList=new ArrayList<>(list);
+//			System.out.println(newList);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+}

@@ -1,0 +1,335 @@
+package com.example;
+
+import com.atilika.kuromoji.ipadic.Token;
+import com.atilika.kuromoji.ipadic.Tokenizer;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.StringTokenizer;
+
+import org.fnlp.nlp.cn.CNFactory;
+
+public class MorphologicalAnalysis {
+	private String lang;
+	private String message;
+//	private int holeNum;
+
+	public MorphologicalAnalysis(String lang, String message) throws Exception {
+		if (message == "") {
+			throw new IllegalArgumentException("クライアントから受け取ったメッセージが空になっています。");
+		}
+		if (lang == "") {
+			throw new IllegalArgumentException("言語コードが指定されていません。");
+		}
+//		if(holeNum<0) {
+//			throw new IllegalArgumentException("holeNum(ホールの数)が負になっています。");
+//		}
+
+		this.lang = lang;
+		this.message = message;
+//		this.holeNum=holeNum;
+	}
+
+	public String createCmd() throws Exception {
+		ArrayList<String> tokens;
+		ArrayList<String> elementList;
+
+		// 形態素解析を行う
+		switch (this.lang) {
+		// 日本語
+		case "ja":
+			tokens = analyzeJA(message);
+			break;
+		// 中国語（簡体字）
+		case "zh-CN":
+			tokens = analyzeZHCN(message);
+			break;
+		// 英語
+		case "en":
+			tokens = analyzeSpacedWordingLang(message);
+			break;
+		default:
+			throw new IllegalArgumentException("サポートされていない言語コード : " + lang);
+		}
+
+		// tokensの中からコマンドの構成要素になりうるものを抽出し、かつ優先度を持たせる。
+		elementList = tokensToElementList(lang, tokens);
+
+		String cmd = "";
+
+		for (int i = 0; i < elementList.size() - 1; i++) {
+			cmd = cmd + elementList.get(i) + " ";
+		}
+
+		cmd += elementList.get(elementList.size() - 1);
+
+		return cmd;
+	}
+
+	private ArrayList<String> analyzeJA(String message) throws Exception {
+		Tokenizer tokenizer = new Tokenizer();
+		List<Token> aTokens = tokenizer.tokenize(message);
+		ArrayList<String> tokens = new ArrayList<String>();
+
+		for (Token kToken : aTokens) {
+			tokens.add(kToken.getSurface());
+		}
+
+		return tokens;
+	}
+
+	private ArrayList<String> analyzeZHCN(String message) throws Exception {
+		CNFactory factory = null;
+
+		// モデルファイルのパスを指定し、形態素解析器を呼び出す
+		factory = CNFactory.getInstance("./lib");
+		String[][] atokens = factory.tag(message);
+
+		// .asListは固定長のListを返すため，一度Listに代入してから，ArrayListに変換する
+		List<String> list = Arrays.asList(atokens[0]);
+		ArrayList<String> tokens = new ArrayList<>(list);
+
+		return tokens;
+	}
+
+	private ArrayList<String> analyzeSpacedWordingLang(String message) throws Exception {
+		StringTokenizer st = new StringTokenizer(message, " ");
+		ArrayList<String> tokens = new ArrayList<String>();
+
+		try {
+			while (true) {
+				tokens.add(st.nextToken());
+			}
+		} catch (NoSuchElementException e) {
+		}
+
+		return tokens;
+	}
+
+	private ArrayList<String> tokensToElementList(String lang, ArrayList<String> tokens) throws Exception {
+		Map<String, Map<String, String>> wordList = new HashMap<>();
+
+		Map<String, String> jaWord = new HashMap<>();
+		wordList.put("ja", jaWord);
+		jaWord.put("接続", "connect");
+		jaWord.put("移動", "run");
+		jaWord.put("移す", "run");
+		jaWord.put("切断", "disconnect");
+		jaWord.put("切る", "disconnect");
+		jaWord.put("一", "1");
+		jaWord.put("二", "2");
+		jaWord.put("三", "3");
+		jaWord.put("四", "4");
+		jaWord.put("五", "5");
+		jaWord.put("六", "6");
+
+		Map<String, String> zhCNWord = new HashMap<>();
+		wordList.put("zh-CN", zhCNWord);
+		zhCNWord.put("连接", "connect");
+		zhCNWord.put("移到", "run");
+		zhCNWord.put("断开", "disconnect");
+		zhCNWord.put("一", "1");
+		zhCNWord.put("二", "2");
+		zhCNWord.put("三", "3");
+		zhCNWord.put("四", "4");
+		zhCNWord.put("五", "5");
+		zhCNWord.put("六", "6");
+
+		Map<String, String> enWord = new HashMap<>();
+		wordList.put("en", enWord);
+		enWord.put("connect", "connect");
+		enWord.put("move", "run");
+		enWord.put("disconnect", "disconnect");
+		enWord.put("first", "1");
+		enWord.put("second", "2");
+		enWord.put("third", "3");
+		enWord.put("fourth", "4");
+		enWord.put("fifth", "5");
+		enWord.put("sixth", "6");
+
+//		Map<String, Map<String, String>> numberList = new HashMap<>();
+//
+//		Map<String, String> jaNumber = new HashMap<>();
+//		numberList.put("ja", jaNumber);
+//		jaNumber.put("一", "1");
+//		jaNumber.put("二", "2");
+//		jaNumber.put("三", "3");
+//		jaNumber.put("四", "4");
+//		jaNumber.put("五", "5");
+//		jaNumber.put("六", "6");
+//
+//		Map<String, String> zhCNNumber = new HashMap<>();
+//		numberList.put("zh-CN", zhCNNumber);
+//		zhCNNumber.put("一", "1");
+//		zhCNNumber.put("二", "2");
+//		zhCNNumber.put("三", "3");
+//		zhCNNumber.put("四", "4");
+//		zhCNNumber.put("五", "5");
+//		zhCNNumber.put("六", "6");
+//
+//		Map<String, String> enNumber = new HashMap<>();
+//		numberList.put("en", enNumber);
+//		enNumber.put("first", "1");
+//		enNumber.put("second", "2");
+//		enNumber.put("third", "3");
+//		enNumber.put("fourth", "4");
+//		enNumber.put("fifth", "5");
+//		enNumber.put("sixth", "6");
+
+		ArrayList<String> elementList = new ArrayList<String>();
+//
+//		Map<String, String> runList = new HashMap<>();
+//		runList.put("ja", "移動");
+//		runList.put("ja", "動かす");
+//		runList.put("zh-CN", "移到");
+//		runList.put("en", "move");
+
+//		// 数字のtokenの個数
+//		int count = 0;
+
+		int i = 0;
+		boolean isLoop = false;
+		boolean runFirstExists = false;
+
+		try {
+			while (tokens.size() > i) {
+				String token = tokens.get(i);
+
+//				for (Map.Entry<String, String> set : numberList.get(lang).entrySet()) {
+//					if (token.equals(set.getKey().toString())) {
+//						isLoop=true;
+//						break;
+//					}
+//				}
+
+//				// tokenがアラビア数字の場合
+//				if (Character.isDigit(tokens.get(i).charAt(0))) {
+//					// tokenが全角文字の場合は，半角に直す
+//					if (String.valueOf(tokens.get(i)).getBytes().length >= 2) {
+//						int tmp = Integer.parseInt(tokens.get(i));
+//						tokens.set(i, String.valueOf(tmp));
+//					}
+//
+//					while(tokens.get(i)!="")
+//					
+//					elementList.add(String.valueOf(tokens.get(i)));
+//					count++;
+//					continue;
+//				}
+
+//				ArrayList<String> buf = new ArrayList<String>();
+
+				for (Map.Entry<String, String> set : wordList.get(lang).entrySet()) {
+					// tokenがアラビア数字の場合
+					if (Character.isDigit(token.charAt(0))) {
+						// tokenが全角文字の場合は，半角に直す
+						if (String.valueOf(tokens.get(i)).getBytes().length >= 2) {
+							int tmp = Integer.parseInt(tokens.get(i));
+							tokens.set(i, String.valueOf(tmp));
+						}
+						isLoop = true;
+					}
+
+					if (token.equals(set.getKey().toString())) {
+						if (Character.isDigit(set.getValue().charAt(0))) {
+							isLoop = true;
+						}
+
+						if (set.getValue() == "run") {
+							runFirstExists = true;
+							isLoop = true;
+						}
+
+						if (!isLoop) {
+							elementList.add(set.getValue());
+							i++;
+							break;
+						}
+					}
+				}
+				
+				ArrayList<String> buf = new ArrayList<String>();
+
+				// runの処理
+				while (isLoop) {
+					// tokenがアラビア数字の場合
+					if (Character.isDigit(token.charAt(0))) {
+						// tokenが全角文字の場合は，半角に直す
+						if (String.valueOf(tokens.get(i)).getBytes().length >= 2) {
+							int tmp = Integer.parseInt(tokens.get(i));
+							tokens.set(i, String.valueOf(tmp));
+						}
+						buf.add(tokens.get(i));
+						i++;
+						continue;
+					}
+
+					for (Map.Entry<String, String> sset : wordList.get(lang).entrySet()) {
+						if (tokens.get(i).equals(sset.getKey().toString())) {
+							if (Character.isDigit(sset.getValue().charAt(0))) {
+								buf.add(tokens.get(i));
+								break;
+							}
+
+							if (sset.getValue() == "run" && runFirstExists == false) {
+								buf.add(tokens.get(i));
+								break;
+							}
+							isLoop = false;
+							break;
+						}
+					}
+
+					if (buf.size() < 2) {
+						throw new Exception("ホール番号を2つ以上指定してください。");
+					}
+
+					if (runFirstExists) {
+						for (int j = 0; j < buf.size(); j++) {
+							elementList.add(buf.get(j));
+						}
+					} else {
+						elementList.add(buf.get(buf.size() - 1));
+
+						for (int j = 0; j < buf.size() - 1; j++) {
+							elementList.add(buf.get(j));
+						}
+					}
+
+					i++;
+
+					break;
+				}
+
+			}
+		} catch (NumberFormatException | IllegalStateException e) {
+			throw e;
+		}
+
+		return elementList;
+	}
+
+	private String elementListToCmd(ArrayList<Info> elementList) {
+		Queue<Info> q = new PriorityQueue<Info>(1, new InfoComparator());
+
+		for (int i = 0; i < elementList.size(); i++) {
+			q.add(elementList.get(i));
+		}
+
+		String cmd = "";
+
+		for (int i = 0; i < elementList.size() - 1; i++) {
+			cmd += q.poll().cmdElement + " ";
+		}
+
+		cmd += q.poll().cmdElement;
+
+		return cmd;
+	}
+}
