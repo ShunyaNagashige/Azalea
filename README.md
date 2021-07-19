@@ -7,6 +7,10 @@
 ## アーキテクチャ
 ![Test Image 2](architecture.png)
 
+## ディレクトリ及びファイル構成図
+特に重要なディレクトリおよびファイルのみについて記載する。
+![Test Image 2](dir-tree.png)
+
 ## 使用したライブラリ
 - kuromoji
 - FNLP
