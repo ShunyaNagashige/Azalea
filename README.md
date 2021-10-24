@@ -1,17 +1,20 @@
 # Azalea
-���{��C�p��C������(�ȑ̎�)�Ń��{�b�g�ɖ��߂ł���Android�A�v���ł��B
+日本語，英語，中国語(簡体字)でロボットに命令できるAndroidアプリです。
 
-## ���C�A�E�g
+## 説明用動画へのリンク
+https://drive.google.com/file/d/1LavuDBNkoDyJTxIQD8_vxSdxRYgu_nCO/view?usp=sharing
+
+## レイアウト
 ![Test Image 1](android-layout.PNG)
 
-## �A�[�L�e�N�`��
+## アーキテクチャ
 ![Test Image 2](architecture.png)
 
-## �f�B���N�g���y�уt�@�C���\���}
-���ɏd�v�ȃf�B���N�g������уt�@�C���݂̂ɂ��ċL�ڂ���B
+## ディレクトリ及びファイル構成図
+特に重要なディレクトリおよびファイルのみについて記載する。
 ![Test Image 2](dir-tree.png)
 
-## �g�p�������C�u����
+## 使用したライブラリ
 - kuromoji
 - FNLP
 - GSON
